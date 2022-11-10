@@ -87,28 +87,13 @@ WHERE guestId = (
 SET SQL_SAFE_UPDATES=0;
 
 DELETE FROM guestReservation
-WHERE guestId IN (
-	SELECT guestId 
-    FROM(
-		SELECT 
-			guestId
-		FROM guest
-		WHERE firstName LIKE @deletedUserFName 
-		AND lastName LIKE @deletedUserLName) AS guestTableHolder);
+WHERE reservationId = @reservationIdToDelete;
 
 -- Delete Jeremiah's reservation from the reservation table using the
 -- @reservationIdToDelete session variable
 
 DELETE FROM reservation
-WHERE reservationId IN 
-	(SELECT reservationId
-    FROM (
-		SELECT 
-			reservationId
-		FROM reservation
-		INNER JOIN guestReservation USING(reservationId)
-		INNER JOIN guest USING(guestId) 
-		WHERE firstName LIKE @deletedUserFName AND lastName LIKE @deletedUserLName) AS reservationTableHolder);
+WHERE reservationId = @reservationIdToDelete;
 
 -- Delete Jeremiah from the guest table, thus finalizing the removal of Jeremiah's
 -- reservations and information
