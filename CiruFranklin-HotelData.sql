@@ -23,6 +23,9 @@ INSERT INTO `guestreservation` VALUES (2,1),(3,2),(4,3),(5,4),(1,5),(6,6),(7,7),
 
 -- BEGIN JEREMIAH PENDERGRASS DATA REMOVAL
 
+SET @deletedUserFName = "Jeremiah";
+SET @deletedUserLName = "Pendergrass";
+
 -- The below SELECT Statements can be used to ensure the proper data is removed
 
 -- BEGIN SELECT STATEMENTS
@@ -81,13 +84,10 @@ WHERE guestId = (
 -- NOTE: In queries where the delete condition is dependent in a subquery, this subquery
 -- is nested so MySQL does not throw an error
 
-SET @deletedUserFName = "Jeremiah";
-SET @deletedUserLName = "Pendergrass";
-
 SET SQL_SAFE_UPDATES=0;
 
 DELETE FROM guestReservation
-WHERE guestId = (
+WHERE guestId IN (
 	SELECT guestId 
     FROM(
 		SELECT 
@@ -100,7 +100,7 @@ WHERE guestId = (
 -- @reservationIdToDelete session variable
 
 DELETE FROM reservation
-WHERE reservationId = 
+WHERE reservationId IN 
 	(SELECT reservationId
     FROM (
 		SELECT 
