@@ -1,5 +1,6 @@
 -- Cirũ Franklin (she/they), Software Engineer 11/09/2022
 -- Assessment: Hotel Schema
+-- Database declaration script
 
 DROP DATABASE IF EXISTS CiruFranklinHotelDB;
 
@@ -23,14 +24,14 @@ CREATE TABLE roomType(
 
 CREATE TABLE room(
     roomId INT PRIMARY KEY AUTO_INCREMENT,
-    roomNumber INT,
+    roomNumber INT NOT NULL,
     typeId INT NOT NULL,
     FOREIGN KEY fk_room_roomType (typeId)
         REFERENCES roomType(typeId),
     adaAccessible boolean NOT NULL,
     standardOccupancy INT NOT NULL,
     maxOccupancy INT NOT NULL,
-    basePrice Decimal(6, 2),
+    basePrice Decimal(6, 2) NOT NULL,
     pricePerAdditionalPerson Decimal(5,2)
 );
 
@@ -57,14 +58,18 @@ CREATE TABLE guest(
     city VARCHAR(25),
     stateAbbr VARCHAR(25),
     zip VARCHAR(10),
-    phoneNumber VARCHAR(10) NOT NULL
+    phoneNumber VARCHAR(20) NOT NULL
 );
 
 CREATE TABLE reservation(
     reservationId INT PRIMARY KEY AUTO_INCREMENT,
     roomId INT NOT NULL,
     FOREIGN KEY fk_reservation_room (roomId)
-        REFERENCES room(roomId)
+        REFERENCES room(roomId),
+	adults INT NOT NULL,
+    children INT NOT NULL,
+    startDate DATE NOT NULL,
+    endDate DATE NOT NULL
 );
 
 CREATE TABLE guestReservation(
