@@ -127,7 +127,7 @@ GROUP BY guestId
 ORDER BY totalReservations DESC, lastName ASC;
 
 -- 11 rows returned (12 when Jeremiah Pendergrass' reservation 
--- and information deletion script is not ran
+-- and information deletion script is not ran)
 
 -- 7. Write a query that displays the name, address, and phone number of a guest 
 -- based on their phone number. (Choose a phone number from the existing data.)
