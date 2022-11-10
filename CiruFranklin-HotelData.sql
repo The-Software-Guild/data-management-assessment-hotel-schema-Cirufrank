@@ -18,5 +18,106 @@ INSERT INTO `reservation` VALUES (1,16,1,0,'2023-02-02','2023-02-04'),(2,3,2,1,'
 
 INSERT INTO `guestreservation` VALUES (2,1),(3,2),(4,3),(5,4),(1,5),(6,6),(7,7),(8,8),(9,9),(10,10),(11,11),(12,12),(12,13),(6,14),(1,15),(9,16),(10,17),(3,18),(3,19),(2,20),(5,21),(4,22),(2,23),(2,24),(11,25);
 
+-- The below portion of the script deletes Jeremiah Pendergrass' reservation and
+-- information from the database
 
+-- BEGIN JEREMIAH PENDERGRASS DATA REMOVAL
+
+-- The below SELECT Statements can be used to ensure the proper data is removed
+
+-- BEGIN SELECT STATEMENTS
+
+-- SELECT * FROM reservation
+-- WHERE reservationId = 
+-- 	(SELECT 
+-- 		reservationId
+-- 	FROM reservation
+-- 	INNER JOIN guestReservation USING(reservationId)
+-- 	INNER JOIN guest USING(guestId) 
+-- 	WHERE firstName LIKE @deletedUserFName AND lastName LIKE @deletedUserLName);
+--     
+-- SELECT reservationId FROM
+-- guestReservation
+-- WHERE guestId = (
+-- 	SELECT 
+-- 		guestId
+-- 	FROM guest
+-- 	WHERE firstName LIKE @deletedUserFName AND lastName LIKE @deletedUserLName);
+--     
+-- SELECT *
+-- 	FROM guest
+-- 	WHERE firstName LIKE @deletedUserFName AND lastName LIKE @deletedUserLName;
+
+-- END OF SELECT STATEMENTS
+
+
+-- Stores the id of the guest reservation to delete
+
+-- BEGIN reservationIdToDelete SESSION VARIABLE STORAGE AND SELECT STATEMENT TEST
+
+SELECT reservationId 
+INTO @reservationIdToDelete
+FROM
+guestReservation
+WHERE guestId = (
+	SELECT 
+		guestId
+	FROM guest
+	WHERE firstName LIKE @deletedUserFName AND lastName LIKE @deletedUserLName);
+
+-- Select statement to ensure the @reservationIdToDelete session variable was stored;
+
+-- SELECT * 
+-- FROM reservation 
+-- WHERE reservationId = @reservationIdToDelete;
+
+-- END reservationIdToDelete SESSION VARIABLE STORAGE AND SELECT STATEMENT TEST
+
+
+
+-- Delete guest reservation of Jeremiah from the guestReservation table first since 
+-- this references both the guest and reservation tables
+
+-- NOTE: In queries where the delete condition is dependent in a subquery, this subquery
+-- is nested so MySQL does not throw an error
+
+SET @deletedUserFName = "Jeremiah";
+SET @deletedUserLName = "Pendergrass";
+
+SET SQL_SAFE_UPDATES=0;
+
+DELETE FROM guestReservation
+WHERE guestId = (
+	SELECT guestId 
+    FROM(
+		SELECT 
+			guestId
+		FROM guest
+		WHERE firstName LIKE @deletedUserFName 
+		AND lastName LIKE @deletedUserLName) AS guestTableHolder);
+
+-- Delete Jeremiah's reservation from the reservation table using the
+-- @reservationIdToDelete session variable
+
+DELETE FROM reservation
+WHERE reservationId = 
+	(SELECT reservationId
+    FROM (
+		SELECT 
+			reservationId
+		FROM reservation
+		INNER JOIN guestReservation USING(reservationId)
+		INNER JOIN guest USING(guestId) 
+		WHERE firstName LIKE @deletedUserFName AND lastName LIKE @deletedUserLName) AS reservationTableHolder);
+
+-- Delete Jeremiah from the guest table, thus finalizing the removal of Jeremiah's
+-- reservations and information
+
+DELETE FROM guest
+WHERE firstName LIKE @deletedUserFName
+AND lastName LIKE @deletedUserLName;
+
+SET SQL_SAFE_UPDATES=1;
+
+-- END JEREMIAH PENDERGRASS DATA REMOVAL
 

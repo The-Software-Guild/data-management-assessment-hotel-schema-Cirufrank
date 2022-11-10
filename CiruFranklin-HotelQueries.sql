@@ -64,6 +64,8 @@ INNER JOIN reservation USING(reservationId)
 INNER JOIN room USING(roomId)
 WHERE firstName = @guestFirstName
 AND lastName = @guestLastName;
+
+-- 1 row returned
     
 -- 4. Write a query that returns a list of rooms, reservation ID, and per-room 
 -- cost for each reservation. The results should include all rooms, whether 
@@ -124,7 +126,8 @@ INNER JOIN reservation USING(reservationId)
 GROUP BY guestId
 ORDER BY totalReservations DESC, lastName ASC;
 
--- 12 rows returned
+-- 11 rows returned (12 when Jeremiah Pendergrass' reservation 
+-- and information deletion script is not ran
 
 -- 7. Write a query that displays the name, address, and phone number of a guest 
 -- based on their phone number. (Choose a phone number from the existing data.)
